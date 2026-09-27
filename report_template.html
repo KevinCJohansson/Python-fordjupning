@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Sales Report</title>
+<style>
+  @page {
+  size: A4;
+  margin: 2.6cm 2cm 2cm 2cm;
+  background: #12181F;
+  @top-left {
+    content: element(pageHeader);
+    width: 100%;
+  }
+  @bottom-right {
+    content: "Page " counter(page) " of " counter(pages);
+    color: #8C97A5;
+    font-size: 12px;
+    padding-bottom: 5px;
+  }
+}
+@page :first {
+  margin-top: 0.5cm;
+  @top-left {
+    content: none;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  background: #12181F;
+  margin: 0;
+}
+
+body {
+  color: #EDEFF2;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  padding: 40px;
+}
+
+h1 {
+  color: #EDEFF2;
+  border-bottom: 2px solid #4FD1C5;
+  padding-bottom: 8px;
+}
+
+h2 {
+  color: #EDEFF2;
+  margin-top: 30px;
+}
+
+.meta {
+  color: #8C97A5;
+  font-size: 0.9em;
+  margin-bottom: 30px;
+}
+
+.running-header {
+  position: running(pageHeader);
+  border-top: 2px solid #4FD1C5;
+  padding-top: 6px;
+}
+
+.running-header .meta {
+  color: #8C97A5;
+  font-size: 0.85em;
+}
+
+.kpi-row {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.kpi-box {
+  background: #1B232C;
+  border-radius: 8px;
+  padding: 16px 20px;
+  flex: 1;
+}
+
+.kpi-value {
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #EDEFF2;
+}
+
+.kpi-label {
+  font-size: 0.85em;
+  color: #8C97A5;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+}
+
+th, td {
+  border: 1px solid #2A333D;
+  padding: 8px 10px;
+  text-align: left;
+  color: #EDEFF2;
+}
+
+th {
+  background: #1B232C;
+}
+
+td {
+  white-space: nowrap;
+}
+
+img {
+  max-width: 100%;
+  margin: 12px 0;
+}
+</style>
+</head>
+<body>
+  <div class="running-header">
+    <div class="meta">Generated {{ generated_date }} | Period: {{ start_date }} – {{ end_date }}</div>
+  </div>
+
+  <h1>Sales Report</h1>
+  <div class="meta">Generated {{ generated_date }} | Period: {{ start_date }} – {{ end_date }}</div>
+
+  {% import "macros.html" as m %}
+
+  <div class="kpi-row">
+    {{ m.kpi(total_sales, "Total sales") }}
+    {{ m.kpi(n_orders, "Orders", is_currency=False) }}
+    {{ m.kpi(avg_order_value, "Avg. order value") }}
+  </div>
+
+  <h2>Sales trend</h2>
+  <img src="{{ weekly_trend_img }}" alt="Weekly sales">
+
+  <h2>Top 5 products</h2>
+  <table>
+    <tr><th>Product</th><th>Sales</th></tr>
+    {% for name, sales in top_products %}
+    <tr><td>{{ name }}</td><td>{{ sales | currency }}</td></tr>
+    {% endfor %}
+  </table>
+
+  <h2>Sales by category</h2>
+  <img src="{{ category_img }}" alt="Sales by category">
+
+  <h2>Sales by region</h2>
+  <img src="{{ region_img }}" alt="Sales by region">
+</body>
+</html>
